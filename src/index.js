@@ -3,6 +3,7 @@ import rq from 'request-promise'
 import stringify from 'csv-stringify'
 import commandLineArgs from 'command-line-args'
 import * as fs from 'fs'
+import { promisify } from 'util'
 import path from 'path'
 
 const argsDefinitions = [
@@ -15,12 +16,13 @@ const argsDefinitions = [
 const API_KEY = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqamNlcmVyb0BpZGVhbC5lcyIsImp0aSI6Ijg2NTZiOWFmLWVmM2UtNGI1YS04OTU0LTBmNzBkZTE1ZmUzZCIsImlzcyI6IkFFTUVUIiwiaWF0IjoxNTA3OTEwMTIxLCJ1c2VySWQiOiI4NjU2YjlhZi1lZjNlLTRiNWEtODk1NC0wZjcwZGUxNWZlM2QiLCJyb2xlIjoiIn0.XnlDwKo8uQEwwl1S3XnQ5BzWUrs5XnP-uGMn4_Rb0iA'
 const DATE_FORMAT = 'DD/MM/YYYY'
 const args = commandLineArgs(argsDefinitions)
+const setTimeoutPromise = promisify(setTimeout)
 
 const state = {
   apiKey: args.apikey || API_KEY,
   baseUrl: 'https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini',
   station: '5530E',
-  startDate: args.start ? moment(args.start, DATE_FORMAT) : moment('01/05/2016', DATE_FORMAT),
+  startDate: args.start ? moment(args.start, DATE_FORMAT) : moment('01/05/2017', DATE_FORMAT),
   endDate: args.end ? moment(args.end, DATE_FORMAT) : moment('12/07/2017', DATE_FORMAT),
   dateFormat: args.dateformat || DATE_FORMAT,
   requestOptions: {
@@ -67,6 +69,9 @@ const getDataBetween = (start, end, accum) => {
   
   let actualEnd = moreThanOneMonth(start, end) ? start.clone().add(1, 'months') : end
   
+  // eslint-disable-next-line
+  console.log(`Requesting data between ${start.format('DD-MM-YYYY')} and ${end.format('DD-MM-YYYY')}`)
+
   rq(getUrlString(start, actualEnd), state.requestOptions)
     .then(response => {
       if (state.fields.length === 0) {
@@ -76,11 +81,13 @@ const getDataBetween = (start, end, accum) => {
         .then(data => save(JSON.parse(data), accum))
         .then(accum => {
           if (!isNextIterationLast(start.clone().add(1, 'months'))) {
-            getDataBetween(
-              start.clone().add(1, 'months'),
-              actualEnd.clone().add(1, 'months'), 
-              accum
-            )
+            setTimeoutPromise(5000)
+              .then(() => {
+                getDataBetween(
+                  start.clone().add(1, 'months'),
+                  actualEnd.clone().add(1, 'months'), 
+                  accum
+                )})
           } else {
             exportAsCsv([state.fields.join(',')].concat('\n').concat(accum))
           }
