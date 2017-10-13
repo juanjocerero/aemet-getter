@@ -22,8 +22,8 @@ const state = {
   apiKey: args.apikey || API_KEY,
   baseUrl: 'https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini',
   station: '5530E',
-  startDate: args.start ? moment(args.start, DATE_FORMAT) : moment('01/05/2017', DATE_FORMAT),
-  endDate: args.end ? moment(args.end, DATE_FORMAT) : moment('12/07/2017', DATE_FORMAT),
+  startDate: args.start ? moment(args.start, DATE_FORMAT) : moment('01/01/1973', DATE_FORMAT),
+  endDate: args.end ? moment(args.end, DATE_FORMAT) : moment('01/10/2017', DATE_FORMAT),
   dateFormat: args.dateformat || DATE_FORMAT,
   requestOptions: {
     rejectUnauthorized: false,
@@ -34,7 +34,8 @@ const state = {
       'cache-control': 'no-cache'
     }
   },
-  fields: []
+  fields: [],
+  waitAmount: 3000
 }
 
 const getMoment = date => moment(date, state.dateFormat)
@@ -81,7 +82,7 @@ const getDataBetween = (start, end, accum) => {
         .then(data => save(JSON.parse(data), accum))
         .then(accum => {
           if (!isNextIterationLast(start.clone().add(1, 'months'))) {
-            setTimeoutPromise(5000)
+            setTimeoutPromise(state.waitAmount)
               .then(() => {
                 getDataBetween(
                   start.clone().add(1, 'months'),
