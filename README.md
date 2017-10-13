@@ -37,6 +37,7 @@ All the data comes from Aemet's public REST API. You can read everything about t
   `https://opendata.aemet.es/centrodedescargas/inicio`
 
 # TODO
+- Write to output file in an async way so as to not overdo RAM usage
 - Implement true usage of command line arguments
 - Manage error messages and statuses better
 - Process raw csv data based on user preferences object
