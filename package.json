@@ -9,6 +9,7 @@
     "babel-preset-env": "^1.6.0",
     "command-line-args": "^4.0.7",
     "csv-stringify": "^1.0.4",
+    "d3": "^4.11.0",
     "moment": "^2.19.1",
     "request": "^2.83.0",
     "request-promise": "^4.2.2"

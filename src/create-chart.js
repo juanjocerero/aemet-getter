@@ -6,3 +6,5 @@ https://www.visualcinnamon.com/2013/09/making-d3-radar-chart-look-bit-better.htm
 http://bl.ocks.org/chrisrzhou/2421ac6541b68c1680f8
 
 */
+
+import * as fs from 'fs'
