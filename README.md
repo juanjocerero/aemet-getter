@@ -41,3 +41,4 @@ All the data comes from Aemet's public REST API. You can read everything about t
 - Implement true usage of command line arguments
 - Manage error messages and statuses better
 - Process raw csv data based on user preferences object
+- Generate visualization using d3.v4
