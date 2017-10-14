@@ -8,6 +8,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "command-line-args": "^4.0.7",
+    "csv-parse": "^1.2.4",
     "csv-stringify": "^1.0.4",
     "d3": "^4.11.0",
     "lodash": "^4.17.4",
@@ -17,6 +18,6 @@
   },
   "scripts": {
     "start": "babel-node src",
-    "parse": "babel-node src/create-chart.js"
+    "parse": "babel-node src/parse.js"
   }
 }
