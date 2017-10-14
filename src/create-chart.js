@@ -7,6 +7,8 @@ http://bl.ocks.org/chrisrzhou/2421ac6541b68c1680f8
 
 */
 
+/* eslint-disable */
+
 import _ from 'lodash'
 import * as fs from 'fs'
 import path from 'path'
