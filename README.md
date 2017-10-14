@@ -3,7 +3,7 @@ A Node.js program that programatically gets data from Agencia Estatal de Meteoro
 
 # Before you use
 
-You're going to need your own API key (Aemet keys expire **every 5 days**). You can do so visiting [this URL](https://opendata.aemet.es/centrodedescargas/altaUsuario).
+You're going to need your own API key (Aemet keys expire **after 5 days**). You can do so visiting [this URL](https://opendata.aemet.es/centrodedescargas/altaUsuario).
 
 You also need the code of the station you want to query. You can get this code making a test request using [Aemet's own frontend for their API](https://opendata.aemet.es/centrodedescargas/productosAEMET).
 
