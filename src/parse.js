@@ -24,6 +24,9 @@ const asObjectArray = csv => parse(csv, { auto_parse: true, columns: true })
 const mutate = data => data.map(d => ({
   date: moment(d.fecha, 'YYYY-MM-DD'),
   date_string: d.fecha,
+  year: +d.fecha.split('-')[0],
+  month: +d.fecha.split('-')[1],
+  day: +d.fecha.split('-')[2],
   tmed: d.tmed,
   tmin: d.tmin,
   tmax: d.tmax,
@@ -32,6 +35,5 @@ const mutate = data => data.map(d => ({
 }))
 
 const data = mutate(asObjectArray(csv()))
-const testData = _.take(data, 5)
 
-console.log(testData)
+console.log(_.groupBy(data.filter(d => d.year > 1973 && d.year < 1977), 'year'))
