@@ -110,7 +110,7 @@ const getDataBetween = (start, end, accum) => {
             exportAsCsv(
               [state.fields.join(',')]
                 .concat('\n')
-                .concat(accum)
+                .concat(_.uniqBy(accum, JSON.stringify))
             )
           }
         })
