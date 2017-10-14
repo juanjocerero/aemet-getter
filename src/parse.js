@@ -14,6 +14,8 @@ import parse from 'csv-parse/lib/sync'
 import * as fs from 'fs'
 import path from 'path'
 
+moment.locale('es')
+
 const csv = () => fs.readFileSync(
   path.join(__dirname, '../output/aemet-data-1973-01-01_2017-10-01.csv'),
   { encoding: 'utf8' }
@@ -25,7 +27,7 @@ const mutate = data => data.map(d => ({
   date: moment(d.fecha, 'YYYY-MM-DD'),
   date_string: d.fecha,
   year: +d.fecha.split('-')[0],
-  month: +d.fecha.split('-')[1],
+  month: moment.months((+d.fecha.split('-')[1]) - 1),
   day: +d.fecha.split('-')[2],
   tmed: d.tmed,
   tmin: d.tmin,
@@ -34,6 +36,19 @@ const mutate = data => data.map(d => ({
   station: `${d.nombre} (${d.provincia})`.toLocaleLowerCase()
 }))
 
-const data = mutate(asObjectArray(csv()))
+const groupByYear = data => _.groupBy(data, 'year')
 
-console.log(_.groupBy(data.filter(d => d.year > 1973 && d.year < 1977), 'year'))
+const groupByMonth = data => {
+  let obj = {}
+  _.forOwn(data, (value, key) => obj[key] = _.groupBy(value, 'month'))
+  return obj
+}
+
+const data = groupByMonth(groupByYear(mutate(asObjectArray(csv()))))
+
+_.forOwn(data, (yearData, year) => {
+  _.forOwn(yearData, (days, month) => {
+    console.log(`year: ${year}, month: ${month}, days: ${days.length}`)
+  })
+})
+
