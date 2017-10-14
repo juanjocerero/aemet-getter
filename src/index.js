@@ -37,7 +37,7 @@ const save = (data, accum) => new Promise((resolve, reject) => {
     resolve(accum.concat(
       data.map(d => {
         Object.keys(d).forEach(k => {
-          d[k].replace(',', '.').indexOf('.') !== -1 ? d[k] = +d[k] : null
+          d[k].replace(',', '.').indexOf('.') !== -1 ? d[k] = +d[k] : d[k]
         })
         return d
       })
