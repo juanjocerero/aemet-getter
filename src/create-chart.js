@@ -20,7 +20,3 @@ const data = fs.readFileSync(
 
 const keys = _.take(data, 1)
 const values = _.drop(data, 1)
-
-const testDataObject = values.filter(d => d.split(',')[0].split('-')[0] === '1973')
-
-console.log(testDataObject)
