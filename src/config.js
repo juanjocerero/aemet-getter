@@ -20,7 +20,7 @@ export default {
   baseUrl: 'https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini',
   station: args.meteostation ? args.meteostation : '5530E',
   startDate: args.start ? moment(args.start, DATE_FORMAT) : moment('01/01/1973', DATE_FORMAT),
-  endDate: args.end ? moment(args.end, DATE_FORMAT) : moment('01/10/2017', DATE_FORMAT),
+  endDate: args.end ? moment(args.end, DATE_FORMAT) : moment('01/07/1973', DATE_FORMAT),
   dateFormat: args.dateformat ? args.dateformat : DATE_FORMAT,
   requestOptions: {
     rejectUnauthorized: false,
