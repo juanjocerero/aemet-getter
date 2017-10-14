@@ -21,10 +21,10 @@ You can edit variables for:
   - api key (`apiKey`)
   - wait time between reqs (`waitAmount`). It's not recommended that you set it under **3000ms** unless you're requesting a very small amount of elements, because the API request limit will be hit and the program will halt.  
 
-Run 
-- **`yarn && yarn start`** 
-- or
-- **`npm install && npm run start`**
+## Available commands 
+- **`yarn || npm install`** will install all dependencies.  
+- **`yarn scrape || npm run scrape`** will fetch the data according to the settings and save it as a csv file.
+- **`yarn parse || npm run parse`** will parse the data (*Not useful at this point*).
 
 Data is exported as a csv file by default to an `output/` folder.
 

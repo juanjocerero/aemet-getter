@@ -17,7 +17,7 @@
     "request-promise": "^4.2.2"
   },
   "scripts": {
-    "start": "babel-node src",
+    "scrape": "babel-node src",
     "parse": "babel-node src/parse.js"
   }
 }
