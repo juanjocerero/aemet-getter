@@ -32,8 +32,6 @@ const mutate = data => data.map(d => ({
 }))
 
 const data = mutate(asObjectArray(csv()))
-const keys = _.take(data, 1).toString().split(',')
-const values = _.drop(data, 1)
-const testData = _.take(values, 5)
+const testData = _.take(data, 5)
 
 console.log(testData)
