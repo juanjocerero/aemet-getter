@@ -63,13 +63,13 @@ const setCsvFields = metadataUrl => {
 
 const save = (data, accum) => new Promise((resolve, reject) => {
   if (data.length > 0) {
-    accum.concat(
+    resolve(accum.concat(
       data.map(d => {
         Object.keys(d).forEach(k => {
           d[k] = d[k].replace(',', '.')
         })
       })
-    )
+    ))
   } else {
     reject('No data present')
   }
