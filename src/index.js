@@ -2,6 +2,7 @@ import moment from 'moment'
 import rq from 'request-promise'
 import stringify from 'csv-stringify'
 import commandLineArgs from 'command-line-args'
+import _ from 'lodash'
 import * as fs from 'fs'
 import { promisify } from 'util'
 import path from 'path'
@@ -60,7 +61,19 @@ const setCsvFields = metadataUrl => {
     })
 }
 
-const save = (data, accum) => new Promise((resolve, reject) => data.length > 0 ? resolve(accum.concat(data)) : reject('No data present'))
+const save = (data, accum) => new Promise((resolve, reject) => {
+  if (data.length > 0) {
+    accum.concat(
+      data.map(d => {
+        Object.keys(d).forEach(k => {
+          d[k] = d[k].replace(',', '.')
+        })
+      })
+    )
+  } else {
+    reject('No data present')
+  }
+})
 
 const isNextIterationLast = start => getMoment(state.endDate).diff(start, 'months') < 1
 
@@ -70,8 +83,8 @@ const getDataBetween = (start, end, accum) => {
   
   let actualEnd = moreThanOneMonth(start, end) ? start.clone().add(1, 'months') : end
   
-  // eslint-disable-next-line
-  console.log(`Requesting data between ${start.format('DD-MM-YYYY')} and ${end.format('DD-MM-YYYY')}`)
+  // eslint-disable-next-line no-console
+  console.log(`Requesting data between ${start.format(state.dateFormat)} and ${end.format(state.dateFormat)} [${accum.length} elems]`)
 
   rq(getUrlString(start, actualEnd), state.requestOptions)
     .then(response => {
@@ -90,7 +103,11 @@ const getDataBetween = (start, end, accum) => {
                   accum
                 )})
           } else {
-            exportAsCsv([state.fields.join(',')].concat('\n').concat(accum))
+            exportAsCsv(
+              [state.fields.join(';')]
+                .concat('\n')
+                .concat(_.uniq(accum))
+            )
           }
         })
     })
@@ -118,4 +135,5 @@ const exportAsCsv = data => {
   })
 }
 
+moment.locale('es')
 getDataBetween(state.startDate, state.endDate, [])

@@ -10,12 +10,13 @@
     "command-line-args": "^4.0.7",
     "csv-stringify": "^1.0.4",
     "d3": "^4.11.0",
+    "lodash": "^4.17.4",
     "moment": "^2.19.1",
     "request": "^2.83.0",
     "request-promise": "^4.2.2"
   },
   "scripts": {
     "start": "babel-node src",
-    "parse": "babel-node src/parse.js"
+    "parse": "babel-node src/create-chart.js"
   }
 }
