@@ -24,7 +24,7 @@ const state = {
   baseUrl: 'https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini',
   station: '5530E',
   startDate: args.start ? moment(args.start, DATE_FORMAT) : moment('01/01/1973', DATE_FORMAT),
-  endDate: args.end ? moment(args.end, DATE_FORMAT) : moment('01/10/2017', DATE_FORMAT),
+  endDate: args.end ? moment(args.end, DATE_FORMAT) : moment('01/07/1973', DATE_FORMAT),
   dateFormat: args.dateformat || DATE_FORMAT,
   requestOptions: {
     rejectUnauthorized: false,
@@ -67,7 +67,11 @@ const save = (data, accum) => new Promise((resolve, reject) => {
       data.map(d => {
         Object.keys(d).forEach(k => {
           d[k] = d[k].replace(',', '.')
+          if (d[k].indexOf('.') !== -1) {
+            d[k] = +d[k]
+          }
         })
+        return d
       })
     ))
   } else {
@@ -104,9 +108,9 @@ const getDataBetween = (start, end, accum) => {
                 )})
           } else {
             exportAsCsv(
-              [state.fields.join(';')]
+              [state.fields.join(',')]
                 .concat('\n')
-                .concat(_.uniq(accum))
+                .concat(accum)
             )
           }
         })
