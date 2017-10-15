@@ -6,11 +6,11 @@ import { promisify } from 'util'
 import * as fs from 'fs'
 import path from 'path'
 
-import state from './config'
+import config from './config'
 
 const setTimeoutPromise = promisify(setTimeout)
 
-const getMoment = date => moment(date, state.dateFormat)
+const getMoment = date => moment(date, config.dateFormat)
 
 const getFormattedMoment = (date, type = 'start') =>
   date.format()
@@ -21,14 +21,14 @@ const getFormattedMoment = (date, type = 'start') =>
 const getUrlString = (
   now,
   nextEndDate,
-  baseUrl = state.baseUrl,
-  station = state.station
+  baseUrl = config.baseUrl,
+  station = config.station
 ) => `${baseUrl}/${escape(getFormattedMoment(now))}/fechafin/${escape(getFormattedMoment(nextEndDate, 'end'))}/estacion/${station}`.trim()
 
 const setCsvFields = metadataUrl => {
   rq(metadataUrl, { rejectUnauthorized: false })
     .then(response => {
-      state.fields = JSON.parse(response).campos.map(c => c.id)
+      config.fields = JSON.parse(response).campos.map(c => c.id)
     })
 }
 
@@ -49,7 +49,7 @@ const save = (data, accum) => new Promise((resolve, reject) => {
   }
 })
 
-const isNextIterationLast = start => getMoment(state.endDate).diff(start, 'months') < 1
+const isNextIterationLast = start => getMoment(config.endDate).diff(start, 'months') < 1
 
 const moreThanOneMonth = (start, end) => end.diff(start, 'months') > 1
 
@@ -58,18 +58,18 @@ const getDataBetween = (start, end, accum) => {
   let actualEnd = moreThanOneMonth(start, end) ? start.clone().add(1, 'months') : end
   
   // eslint-disable-next-line no-console
-  console.log(`Requesting data between ${start.format(state.dateFormat)} and ${end.format(state.dateFormat)} [${accum.length} elems]`)
+  console.log(`Requesting data between ${start.format(config.dateFormat)} and ${end.format(config.dateFormat)} [${accum.length} elems]`)
 
-  rq(getUrlString(start, actualEnd), state.requestOptions)
+  rq(getUrlString(start, actualEnd), config.requestOptions)
     .then(response => {
-      if (state.fields.length === 0) {
+      if (config.fields.length === 0) {
         setCsvFields(JSON.parse(response).metadatos)
       }
       rq(JSON.parse(response).datos, { rejectUnauthorized: false })
         .then(data => save(JSON.parse(data), accum))
         .then(accum => {
           if (!isNextIterationLast(start.clone().add(1, 'months'))) {
-            setTimeoutPromise(state.waitAmount)
+            setTimeoutPromise(config.waitAmount)
               .then(() => {
                 getDataBetween(
                   start.clone().add(1, 'months'),
@@ -78,7 +78,7 @@ const getDataBetween = (start, end, accum) => {
                 )})
           } else {
             exportAsCsv(
-              [state.fields.join(',')]
+              [config.fields.join(',')]
                 .concat('\n')
                 .concat(_.uniqBy(accum, JSON.stringify))
             )
@@ -99,7 +99,7 @@ const exportAsCsv = data => {
       fs.writeFileSync(
         path.join(
           __dirname, 
-          `./../output/aemet-data-${state.startDate.format().split('T')[0]}_${state.endDate.format().split('T')[0]}.csv`
+          `./../output/aemet-data-${config.startDate.format().split('T')[0]}_${config.endDate.format().split('T')[0]}.csv`
         ),
         output
       )
@@ -110,4 +110,4 @@ const exportAsCsv = data => {
 }
 
 moment.locale('es')
-getDataBetween(state.startDate, state.endDate, [])
+getDataBetween(config.startDate, config.endDate, [])
