@@ -13,6 +13,7 @@ import _ from 'lodash'
 import parse from 'csv-parse/lib/sync'
 import * as fs from 'fs'
 import path from 'path'
+import * as stats from 'd3-array'
 
 moment.locale('es')
 
@@ -48,7 +49,6 @@ const data = groupByMonth(groupByYear(mutate(asObjectArray(csv()))))
 
 _.forOwn(data, (yearData, year) => {
   _.forOwn(yearData, (days, month) => {
-    console.log(`year: ${year}, month: ${month}, days: ${days.length}`)
+    console.log(`y: ${year}, m: ${month}, d: ${days.length}, avg_tmed: ${stats.mean(days.map(d => d.tmed)).toFixed(2)}`)
   })
 })
-
