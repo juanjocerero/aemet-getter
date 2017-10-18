@@ -47,8 +47,12 @@ const groupByMonth = data => {
 
 const dataByMonth = groupByMonth(groupByYear(mutate(asObjectArray(csv()))))
 
-_.forOwn(data, (yearData, year) => {
-  _.forOwn(yearData, (days, month) => {
-    console.log(`y: ${year}, m: ${month}, d: ${days.length}, avg_tmax: ${stats.mean(days.map(d => d.tmax)).toFixed(2)}`)
-  })
-})
+// _.forOwn(data, (yearData, year) => {
+//   _.forOwn(yearData, (days, month) => {
+//     console.log(`y: ${year}, m: ${month}, d: ${days.length}, avg_tmax: ${stats.mean(days.map(d => d.tmax)).toFixed(2)}`)
+//   })
+// })
+
+const data = mutate(asObjectArray(csv()))
+
+console.log(data.filter(d => d.rain > 1 && d.year ===  2017).length)
