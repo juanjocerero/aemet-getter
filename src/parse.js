@@ -11,11 +11,33 @@ http://bl.ocks.org/chrisrzhou/2421ac6541b68c1680f8
 import moment from 'moment'
 import _ from 'lodash'
 import parse from 'csv-parse/lib/sync'
+import stringify from 'csv-stringify'
 import * as fs from 'fs'
 import path from 'path'
 import * as stats from 'd3-array'
 
+import config from './config'
+
 moment.locale('es')
+
+const exportAsCsv = data => {
+  stringify(data, (error, output) => {
+    if (error) {
+      throw new Error(error)
+    }
+    try {
+      fs.writeFileSync(
+        path.join(
+          __dirname, 
+          `/../output/rain.csv`
+        ),
+        output
+      )
+    } catch (error) {
+      throw new Error(error)
+    }
+  })
+}
 
 const csv = () => fs.readFileSync(
   path.join(__dirname, '../output/aemet-data-1973-01-01_2017-10-01.csv'),
@@ -55,4 +77,12 @@ const dataByMonth = groupByMonth(groupByYear(mutate(asObjectArray(csv()))))
 
 const data = mutate(asObjectArray(csv()))
 
-console.log(data.filter(d => d.rain > 1 && d.year ===  2017).length)
+data.filter(d => d.rain > 2 && d.year >= 1973)
+  .forEach(d => {
+    console.log(`${d.day} de ${d.month} de ${d.year}: ${d.rain} mm (l/m^2)`)
+  })
+
+let exp = config.fields.join('/').concat(data.filter(d => d.rain > 2))
+
+console.log(exp)
+exportAsCsv(exp)
