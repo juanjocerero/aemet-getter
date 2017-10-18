@@ -16,8 +16,6 @@ import * as fs from 'fs'
 import path from 'path'
 import * as stats from 'd3-array'
 
-import config from './config'
-
 moment.locale('es')
 
 const exportAsCsv = data => {
@@ -82,7 +80,4 @@ data.filter(d => d.rain > 2 && d.year >= 1973)
     console.log(`${d.day} de ${d.month} de ${d.year}: ${d.rain} mm (l/m^2)`)
   })
 
-let exp = config.fields.join('/').concat(data.filter(d => d.rain > 2))
-
-console.log(exp)
-exportAsCsv(exp)
+exportAsCsv(data.filter(d => d.year >= 2005))
