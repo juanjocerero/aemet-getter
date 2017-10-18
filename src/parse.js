@@ -30,10 +30,10 @@ const mutate = data => data.map(d => ({
   year: +d.fecha.split('-')[0],
   month: moment.months((+d.fecha.split('-')[1]) - 1),
   day: +d.fecha.split('-')[2],
-  tmed: d.tmed,
-  tmin: d.tmin,
-  tmax: d.tmax,
-  rain: d.prec,
+  tmed: +d.tmed,
+  tmin: +d.tmin,
+  tmax: +d.tmax,
+  rain: +d.prec,
   station: `${d.nombre} (${d.provincia})`.toLocaleLowerCase()
 }))
 
@@ -45,10 +45,13 @@ const groupByMonth = data => {
   return obj
 }
 
-const data = groupByMonth(groupByYear(mutate(asObjectArray(csv()))))
+const dataByMonth = groupByMonth(groupByYear(mutate(asObjectArray(csv()))))
 
-_.forOwn(data, (yearData, year) => {
-  _.forOwn(yearData, (days, month) => {
-    console.log(`y: ${year}, m: ${month}, d: ${days.length}, avg_tmed: ${stats.mean(days.map(d => d.tmed)).toFixed(2)}`)
-  })
-})
+// _.forOwn(dataByMonth, (yearData, year) => {
+//   _.forOwn(yearData, (days, month) => {
+//     console.log(`y: ${year}, m: ${month}, d: ${days.length}, avg_tmed: ${stats.mean(days.map(d => d.tmed)).toFixed(2)}`)
+//   })
+// })
+
+const data = mutate(asObjectArray(csv()))
+console.log(data.filter(d => d.rain > 0))
