@@ -49,6 +49,6 @@ const data = groupByMonth(groupByYear(mutate(asObjectArray(csv()))))
 
 _.forOwn(data, (yearData, year) => {
   _.forOwn(yearData, (days, month) => {
-    console.log(`y: ${year}, m: ${month}, d: ${days.length}, avg_tmed: ${stats.mean(days.map(d => d.tmed)).toFixed(2)}`)
+    console.log(`y: ${year}, m: ${month}, d: ${days.length}, avg_tmax: ${stats.mean(days.map(d => d.tmax)).toFixed(2)}`)
   })
 })
