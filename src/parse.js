@@ -27,7 +27,7 @@ const exportAsCsv = data => {
       fs.writeFileSync(
         path.join(
           __dirname, 
-          `/../output/rain.csv`
+          `/../output/med_temp_by_day.csv`
         ),
         output
       )
@@ -67,7 +67,7 @@ const groupByMonth = data => {
 
 const dataByMonth = groupByMonth(groupByYear(mutate(asObjectArray(csv()))))
 
-// _.forOwn(data, (yearData, year) => {
+// _.forOwn(dataByMonth, (yearData, year) => {
 //   _.forOwn(yearData, (days, month) => {
 //     console.log(`y: ${year}, m: ${month}, d: ${days.length}, avg_tmax: ${stats.mean(days.map(d => d.tmax)).toFixed(2)}`)
 //   })
@@ -75,9 +75,22 @@ const dataByMonth = groupByMonth(groupByYear(mutate(asObjectArray(csv()))))
 
 const data = mutate(asObjectArray(csv()))
 
-data.filter(d => d.rain > 2 && d.year >= 1973)
-  .forEach(d => {
-    console.log(`${d.day} de ${d.month} de ${d.year}: ${d.rain} mm (l/m^2)`)
-  })
+let medData = []
 
-exportAsCsv(data.filter(d => d.year >= 2005))
+data.forEach(d => {
+  medData.push({
+    year: d.year,
+    month: +(moment().month(d.month).format("M")),
+    day: d.day,
+    extent: d.tmin
+  })
+})
+
+exportAsCsv(medData)
+
+// data.filter(d => d.rain > 2 && d.year >= 1973)
+//   .forEach(d => {
+//     console.log(`${d.day} de ${d.month} de ${d.year}: ${d.rain} mm (l/m^2)`)
+//   })
+
+// exportAsCsv(data.filter(d => d.year >= 2005))
